@@ -1,21 +1,19 @@
 on:
   workflow_dispatch:
     inputs:
-      skip:
+      update:
         description: 'Skip updating any files'
         default: false
 jobs:
   open-pr:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GHA_PAT }}
     steps:
       - uses: actions/checkout@v2
       - name: Open PR if new versions exists
         run: |
           TIMESTAMP=`date +%s`
 
-          if [ "${{ github.event.inputs.name }}" = false ] ; then
+          if [ ${{ github.event.inputs.update }} = true ] ; then
             echo "Updating date.txt"
             echo $TIMESTAMP > date.txt
           fi
@@ -31,4 +29,4 @@ jobs:
           git commit -a -m "github-actions: bump date to $TIMESTAMP"
 
           echo "Opening PR"
-          # gh pr create --fill
+          gh pr create --fill
