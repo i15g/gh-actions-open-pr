@@ -1,0 +1,34 @@
+on:
+  workflow_dispatch:
+    inputs:
+      skip:
+        description: 'Skip updating any files'
+        default: false
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GHA_PAT }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Open PR if new versions exists
+        run: |
+          TIMESTAMP=`date +%s`
+
+          if [ "${{ github.event.inputs.name }}" = false ] ; then
+            echo "Updating date.txt"
+            echo $TIMESTAMP > date.txt
+          fi
+
+          if git diff --exit-code; then
+            echo "Found no changes"
+            exit 0
+          fi
+
+          git checkout -b gha-bump-date-$TIMESTAMP
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -a -m "github-actions: bump date to $TIMESTAMP"
+
+          echo "Opening PR"
+          # gh pr create --fill
