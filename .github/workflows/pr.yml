@@ -11,9 +11,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      - name: Open PR if new versions exists
+      - name: Open PR if date.txt has changed
         run: |
           TIMESTAMP=`date +%s`
+          BRANCH=gha-bump-date-$TIMESTAMP
 
           if [ "${{ github.event.inputs.update }}" = true ] ; then
             echo "Updating date.txt"
@@ -25,7 +26,6 @@ jobs:
             exit 0
           fi
 
-          BRANCH=gha-bump-date-$TIMESTAMP
           git checkout -b $BRANCH
           git config user.name github-actions
           git config user.email github-actions@github.com
