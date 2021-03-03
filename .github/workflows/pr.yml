@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       update:
-        description: 'Skip updating any files'
+        description: 'Update date file? (default: false)'
         default: false
 jobs:
   open-pr:
