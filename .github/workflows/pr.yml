@@ -2,11 +2,13 @@ on:
   workflow_dispatch:
     inputs:
       update:
-        description: 'Update date file? (default: false)'
+        description: 'Update date file? (true/false)'
         default: 'false'
 jobs:
   open-pr:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Open PR if new versions exists
